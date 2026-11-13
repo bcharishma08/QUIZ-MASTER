@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="QuizMaster - Interactive Online Programming Quiz Platform featuring HTML, CSS, C, Python, Data Structures, and DBMS across Easy, Moderate, and Hard levels.">
+  <meta name="theme-color" content="#0a0e17">
+  <title>QuizMaster - Online Programming Quiz Platform</title>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Ambient Glowing Background Elements -->
+  <div class="bg-ambient-layer">
+    <div class="ambient-orb ambient-orb-1"></div>
+    <div class="ambient-orb ambient-orb-2"></div>
+    <div class="ambient-orb ambient-orb-3"></div>
+  </div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- Global Application Header -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand-logo" id="brandLogoHome" title="Return to Dashboard">
+        <div class="brand-icon">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+        <div class="brand-text">
+          <h1>QuizMaster</h1>
+        </div>
+        <span class="brand-badge">540+ Qs</span>
+      </div>
+
+      <div class="header-controls">
+        <button class="control-btn" id="soundToggleBtn" title="Toggle Sound Effects" aria-label="Toggle Sound Effects">
+          <i class="fas fa-volume-up"></i>
+        </button>
+        <button class="control-btn" id="themeToggleBtn" title="Toggle Light/Dark Theme" aria-label="Toggle Light/Dark Theme">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Application Container -->
+  <main class="app-container">
+
+    <!-- ======================================================================
+         VIEW 1: DASHBOARD
+         ====================================================================== -->
+    <section id="dashboardView" class="view-section active">
+
+      <!-- Hero Banner -->
+      <div class="hero-banner">
+        <div class="hero-content">
+          <div class="hero-pill">
+            <i class="fas fa-fire"></i> Multi-Subject Programming Skill Test
+          </div>
+          <h2 class="hero-title">
+            Test & Level Up Your <span>Coding Knowledge</span>
+          </h2>
+          <p class="hero-subtitle">
+            Challenge yourself across 6 technical categories with 540 verified questions.
+            Choose your difficulty level from Easy to Hard, race against the clock, and get in-depth explanations for every answer.
+          </p>
+          <div class="hero-actions">
+            <a href="#categoriesSection" class="btn-primary">
+              <i class="fas fa-rocket"></i> Explore Categories
+            </a>
+            <button class="btn-secondary" onclick="window.quizMasterApp.retakeFromHistory('python', 'easy', 30)">
+              <i class="fas fa-bolt"></i> Quick Python Quiz
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Ribbon -->
+      <div class="metrics-ribbon">
+        <div class="metric-card">
+          <div class="metric-icon-box icon-purple">
+            <i class="fas fa-layer-group"></i>
+          </div>
+          <div class="metric-data">
+            <h4 id="metricTotalQuestions">540</h4>
+            <p>Verified Questions</p>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon-box icon-blue">
+            <i class="fas fa-cubes"></i>
+          </div>
+          <div class="metric-data">
+            <h4>6</h4>
+            <p>Subject Categories</p>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon-box icon-emerald">
+            <i class="fas fa-clipboard-check"></i>
+          </div>
+          <div class="metric-data">
+            <h4 id="metricTestsTaken">0</h4>
+            <p>Tests Completed</p>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon-box icon-amber">
+            <i class="fas fa-award"></i>
+          </div>
+          <div class="metric-data">
+            <h4 id="metricAvgScore">0%</h4>
+            <p>Average Accuracy</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Categories Section -->
+      <div id="categoriesSection">
+        <div class="section-heading-row">
+          <h2>
+            <i class="fas fa-th-large"></i> Quiz Categories
+          </h2>
+          <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600;">
+            30 Easy + 30 Moderate + 30 Hard per subject
+          </span>
+        </div>
+
+        <!-- Category Grid (Populated dynamically via JS) -->
+        <div class="category-grid" id="categoryGrid"></div>
+      </div>
+
+      <!-- User Previous Quiz Scores & History -->
+      <div class="history-section">
+        <div class="history-header">
+          <div class="section-heading-row" style="margin-bottom: 0;">
+            <h2>
+              <i class="fas fa-history"></i> Quiz History & Performance
+            </h2>
+          </div>
+          <button class="btn-secondary btn-sm" id="btnOpenClearHistory">
+            <i class="fas fa-trash-alt"></i> Clear History
+          </button>
+        </div>
+
+        <!-- History Table -->
+        <div class="history-table-wrapper" id="historyTableWrapper" style="display: none;">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Test</th>
+                <th>Date</th>
+                <th>Subject</th>
+                <th>Level</th>
+                <th>Score</th>
+                <th>Accuracy</th>
+                <th>Rating</th>
+                <th>Time Spent</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody"></tbody>
+          </table>
+        </div>
+
+        <!-- Empty History State -->
+        <div class="empty-history-state" id="emptyHistoryState">
+          <i class="fas fa-chart-line"></i>
+          <h3>No Quizzes Taken Yet</h3>
+          <p>Choose any category above and take your first quiz to begin tracking your progress!</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ======================================================================
+         VIEW 2: ACTIVE QUIZ
+         ====================================================================== -->
+    <section id="quizView" class="view-section">
+
+      <!-- Quiz Top Bar -->
+      <div class="quiz-topbar">
+        <div class="quiz-top-info">
+          <span class="quiz-subject-badge" id="quizSubjectBadge">
+            <i class="fas fa-code"></i> C Programming
+          </span>
+          <span class="badge-pill quiz-diff-badge" id="quizDiffBadge">
+            <i class="fas fa-seedling"></i> Easy
+          </span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <div class="quiz-timer-box" id="quizTimerBox">
+            <i class="fas fa-stopwatch timer-icon"></i>
+            <span class="timer-text" id="timerDisplay">30:00</span>
+          </div>
+
+          <button class="btn-secondary btn-sm" id="btnQuitQuiz" title="Quit Quiz">
+            <i class="fas fa-times"></i> Exit
+          </button>
+        </div>
+      </div>
+
+      <!-- Progress Track -->
+      <div class="quiz-progress-track">
+        <div class="quiz-progress-fill" id="quizProgressFill"></div>
+      </div>
+
+      <!-- Quiz Layout: Main Question Area + Palette Sidebar -->
+      <div class="quiz-view-layout">
+
+        <!-- Question Area -->
+        <div class="quiz-main-area">
+          <div class="question-card">
+            <div class="question-header-row">
+              <span class="question-number-tag" id="questionNumberTag">Question 1 of 30</span>
+              <button class="btn-flag-review" id="btnFlagReview" title="Bookmark for review (Shortcut: F)">
+                <i class="far fa-flag"></i> Mark for Review
+              </button>
+            </div>
+
+            <!-- Question Text / Code Box -->
+            <div class="question-text" id="questionText">Loading question...</div>
+
+            <!-- Options (A, B, C, D) -->
+            <div class="options-grid" id="optionsContainer"></div>
+          </div>
+
+          <!-- Question Action Buttons -->
+          <div class="quiz-actions-row">
+            <div class="quiz-actions-left">
+              <button class="btn-secondary" id="btnPrevQuestion">
+                <i class="fas fa-arrow-left"></i> Previous
+              </button>
+              <button class="btn-secondary" id="btnClearResponse" title="Clear current selection">
+                <i class="fas fa-undo"></i> Clear
+              </button>
+            </div>
+
+            <div class="quiz-actions-right">
+              <button class="btn-primary" id="btnNextQuestion">
+                Next Question <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question Palette Sidebar -->
+        <aside class="palette-sidebar">
+          <div class="palette-heading">
+            <span><i class="fas fa-th"></i> Question Palette</span>
+          </div>
+
+          <div class="palette-legend">
+            <div class="legend-item">
+              <div class="legend-dot dot-answered"></div>
+              <span>Answered</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot dot-current"></div>
+              <span>Current</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot dot-flagged"></div>
+              <span>Flagged</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot dot-unanswered"></div>
+              <span>Unvisited</span>
+            </div>
+          </div>
+
+          <!-- Numbers Grid -->
+          <div class="palette-grid" id="paletteGrid"></div>
+
+          <!-- Palette Summary -->
+          <div class="palette-summary-stats">
+            <span>Answered: <strong id="paletteAnsweredCount">0 / 30</strong></span>
+            <span>Flagged: <strong id="paletteFlaggedCount" style="color:var(--flagged)">0</strong></span>
+            <span>Remaining: <strong id="paletteRemainingCount">30</strong></span>
+          </div>
+        </aside>
+
+      </div>
+
+    </section>
+
+    <!-- ======================================================================
+         VIEW 3: RESULT & COMPREHENSIVE REVIEW
+         ====================================================================== -->
+    <section id="resultView" class="view-section">
+
+      <!-- Result Card -->
+      <div class="result-card">
+        <div class="result-celebration-badge" id="resultEmoji">🏆</div>
+        <h2 class="result-title" id="resultTitle">Outstanding Mastery!</h2>
+        <p class="result-feedback-message" id="resultFeedback">
+          You achieved a phenomenal score! Check out the in-depth question review and explanations below.
+        </p>
+
+        <!-- Score Ring -->
+        <div class="score-circle-display">
+          <div class="score-main-number" id="resultScoreNumber">28 / 30</div>
+          <div class="score-percentage-text" id="resultScorePct">93% Accuracy</div>
+        </div>
+
+        <!-- Stats Breakdown -->
+        <div class="result-stats-grid">
+          <div class="res-stat-box">
+            <div class="res-stat-val res-val-correct" id="resValCorrect">28</div>
+            <div class="res-stat-lbl">Correct (+1)</div>
+          </div>
+          <div class="res-stat-box">
+            <div class="res-stat-val res-val-incorrect" id="resValIncorrect">2</div>
+            <div class="res-stat-lbl">Incorrect</div>
+          </div>
+          <div class="res-stat-box">
+            <div class="res-stat-val res-val-skipped" id="resValSkipped">0</div>
+            <div class="res-stat-lbl">Skipped</div>
+          </div>
+          <div class="res-stat-box">
+            <div class="res-stat-val res-val-time" id="resValTime">12m 45s</div>
+            <div class="res-stat-lbl">Time Spent</div>
+          </div>
+        </div>
+
+        <!-- Result Action Buttons -->
+        <div class="result-actions-row">
+          <button class="btn-primary" id="btnRetakeQuiz">
+            <i class="fas fa-redo"></i> Retake This Quiz
+          </button>
+          <button class="btn-secondary" id="btnBackToDashboard">
+            <i class="fas fa-home"></i> Back to Dashboard
+          </button>
+          <a href="#reviewSectionAnchor" class="btn-secondary">
+            <i class="fas fa-search"></i> Review All Answers
+          </a>
+        </div>
+      </div>
+
+      <!-- In-Depth Review Section -->
+      <div class="review-section" id="reviewSectionAnchor">
+        <div class="section-heading-row">
+          <h2>
+            <i class="fas fa-clipboard-list"></i> Detailed Question Review & Explanations
+          </h2>
+          <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600;">
+            Analyze mistakes & read technical explanations
+          </span>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="review-filter-bar">
+          <button class="review-filter-btn active" data-filter="all">All Questions</button>
+          <button class="review-filter-btn" data-filter="incorrect">Incorrect</button>
+          <button class="review-filter-btn" data-filter="correct">Correct</button>
+          <button class="review-filter-btn" data-filter="skipped">Skipped</button>
+          <button class="review-filter-btn" data-filter="flagged">Flagged</button>
+        </div>
+
+        <!-- Review Cards Container -->
+        <div id="reviewCardsContainer"></div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ======================================================================
+       MODAL DIALOGS
+       ====================================================================== -->
+
+  <!-- Modal 1: Quiz Launch Configuration -->
+  <div class="modal-overlay" id="quizLaunchModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="launchModalTitle"><i class="fas fa-play"></i> Start Quiz</h3>
+        <button class="modal-close-btn modal-close-trigger">&times;</button>
+      </div>
+
+      <form id="quizLaunchForm">
+        <input type="hidden" id="modalSelectedCategory" value="html">
+        <input type="hidden" id="modalSelectedDiff" value="easy">
+
+        <div class="modal-body">
+          <p id="launchModalDesc">
+            You are about to start a quiz. Questions will be randomized and timed.
+          </p>
+
+          <div style="margin-top: 1.25rem;">
+            <label style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+              Choose Quiz Length:
+            </label>
+            <select id="modalQuestionCount" style="width: 100%; padding: 0.75rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 0.95rem; font-weight: 600;">
+              <option value="30" selected>Full Level Test - 30 Questions (30 Mins)</option>
+              <option value="20">Standard Practice - 20 Questions (20 Mins)</option>
+              <option value="10">Quick Sprint - 10 Questions (10 Mins)</option>
+            </select>
+          </div>
+
+          <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted);">
+            <i class="fas fa-info-circle"></i> Questions and answer options are randomly shuffled each time.
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary modal-close-trigger">Cancel</button>
+          <button type="submit" class="btn-primary">
+            <i class="fas fa-play"></i> Start Quiz Now
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Submit Confirmation -->
+  <div class="modal-overlay" id="submitConfirmModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3><i class="fas fa-check-circle" style="color:var(--success);"></i> Submit Quiz</h3>
+        <button class="modal-close-btn modal-close-trigger">&times;</button>
+      </div>
+      <div class="modal-body" id="submitModalBody">
+        <p>Are you sure you want to finish and submit your quiz?</p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary modal-close-trigger">Keep Reviewing</button>
+        <button type="button" class="btn-primary" id="btnConfirmSubmit" style="background:var(--success); border-color:var(--success);">
+          Yes, Submit Final Answers
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Exit Quiz Confirmation -->
+  <div class="modal-overlay" id="exitQuizModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3><i class="fas fa-exclamation-triangle" style="color:var(--warning);"></i> Quit Ongoing Quiz?</h3>
+        <button class="modal-close-btn modal-close-trigger">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>If you exit now, your current answers and timer progress will be lost.</p>
+        <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">
+          You can return to the dashboard and try again whenever you are ready.
+        </p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary modal-close-trigger">Continue Quiz</button>
+        <button type="button" class="btn-danger" id="btnConfirmExit">Quit & Return to Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Clear History Confirmation -->
+  <div class="modal-overlay" id="clearHistoryModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3><i class="fas fa-trash-alt" style="color:var(--danger);"></i> Clear Quiz History?</h3>
+        <button class="modal-close-btn modal-close-trigger">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>This will permanently erase all your saved quiz attempts and performance statistics.</p>
+        <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">
+          This action cannot be undone.
+        </p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary modal-close-trigger">Cancel</button>
+        <button type="button" class="btn-danger" id="btnConfirmClearHistory">Yes, Clear History</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="app-container" style="padding-bottom: 0;">
+      <p>
+        <span>&copy; 2026 <strong>QuizMaster</strong> - Interactive Online Programming Quiz Platform</span>
+      </p>
+      <p style="margin-top: 0.4rem; font-size: 0.8rem; color: var(--text-muted);">
+        <span>HTML &bull; CSS &bull; C Programming &bull; Python &bull; Data Structures &bull; DBMS</span>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Question Data Scripts (Modular 6 Categories) -->
+  <script src="js/questions/htmlQuestions.js"></script>
+  <script src="js/questions/cssQuestions.js"></script>
+  <script src="js/questions/cQuestions.js"></script>
+  <script src="js/questions/pythonQuestions.js"></script>
+  <script src="js/questions/dsQuestions.js"></script>
+  <script src="js/questions/dbmsQuestions.js"></script>
+
+  <!-- Master Registry & Aggregator -->
+  <script src="js/questions.js"></script>
+
+  <!-- Main Application Logic -->
+  <script src="js/app.js"></script>
+</body>
+</html>
