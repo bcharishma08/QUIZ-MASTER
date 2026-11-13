@@ -70,29 +70,37 @@ The platform includes **540 genuine, technically verified questions** (with no p
 
 ---
 
-## 📁 Project Structure
+## 📁 Project Structure (GitHub Repository: `bcharishma08/QUIZ-MASTER`)
 
 ```
 quizmaster/
 │
-├── index.html                   # Master HTML structure, views & modals
-├── README.md                    # Project documentation & run guide
-│
-├── css/
-│   └── style.css                # Modern responsive design & themes
-│
-└── js/
-    ├── app.js                   # Application state, timer, UI router & audio
-    ├── questions.js             # Master registry, metadata, & shuffle engine
-    │
-    └── questions/               # Modular question banks (90 Qs each)
-        ├── htmlQuestions.js     # 30 Easy + 30 Moderate + 30 Hard = 90
-        ├── cssQuestions.js      # 30 Easy + 30 Moderate + 30 Hard = 90
-        ├── cQuestions.js        # 30 Easy + 30 Moderate + 30 Hard = 90
-        ├── pythonQuestions.js   # 30 Easy + 30 Moderate + 30 Hard = 90
-        ├── dsQuestions.js       # 30 Easy + 30 Moderate + 30 Hard = 90
-        └── dbmsQuestions.js     # 30 Easy + 30 Moderate + 30 Hard = 90
+├── .nojekyll                    # Prevents Jekyll from breaking static asset loading
+├── index.html                   # Master HTML (references style.css, questions.js, app.js directly)
+├── style.css                    # Complete stylesheet: dark blue background, cards & animations
+├── questions.js                 # Complete self-contained 540 questions bank & config
+├── app.js                       # Complete interactive app logic, timer, scoring & review
+└── README.md                    # Project documentation & run guide
 ```
+
+---
+
+## 🌐 Deploying to GitHub Pages (`bcharishma08/QUIZ-MASTER`)
+
+QuizMaster is now structured to match your exact repository:
+1. Ensure your repository root contains these 4 primary files (plus `.nojekyll`):
+   - `index.html`
+   - `style.css`
+   - `questions.js`
+   - `app.js`
+   - `.nojekyll`
+2. Push or upload these files to your GitHub repository `bcharishma08/QUIZ-MASTER`.
+3. In your GitHub repository, navigate to **Settings** > **Pages**:
+   - **Source**: `Deploy from a branch`
+   - **Branch**: `main` (or `master`), folder: `/ (root)`
+4. Click **Save**. Your site will be live at:
+   `https://bcharishma08.github.io/QUIZ-MASTER/`
+5. The stylesheet and script references in `index.html` directly target `style.css`, `questions.js`, and `app.js` with zero missing folder dependencies, eliminating 404 and MIME-type errors.
 
 ---
 

@@ -5,6 +5,11 @@
 (function () {
   'use strict';
 
+  if (window.__QUIZMASTER_APP_INITIALIZED__) {
+    return;
+  }
+  window.__QUIZMASTER_APP_INITIALIZED__ = true;
+
   // --------------------------------------------------------------------------
   // Application State
   // --------------------------------------------------------------------------
